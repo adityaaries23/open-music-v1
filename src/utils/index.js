@@ -1,7 +1,20 @@
-const mapDBToResponseAlbum = ({ id, name, year }) => ({
+/* eslint-disable camelcase */
+const mapDBToResponseSong = ({
   id,
-  name,
+  title,
   year,
+  genre,
+  performer,
+  duration,
+  album_id,
+}) => ({
+  id,
+  title,
+  year,
+  genre,
+  performer,
+  duration,
+  albumId: album_id,
 });
 
-module.exports = { mapDBToResponseAlbum };
+module.exports = { mapDBToResponseSong };

@@ -30,17 +30,29 @@ class AlbumService {
     return result.rows;
   }
 
-  async getAlbumById(id) {
+  async getAlbumById(albumId) {
     const query = {
       text: 'select id, name, year from albums where id = $1',
-      values: [id],
+      values: [albumId],
     };
     const result = await this._pool.query(query);
     if (!result.rows.length) {
       throw new NotFoundError('album not found');
     }
+    const { id, name, year } = result.rows[0];
+    const query2 = {
+      text: 'select id, title, performer from songs where album_id = $1',
+      values: [id],
+    };
+    const result2 = await this._pool.query(query2);
+    const songs = result2.rows;
 
-    return result.rows[0];
+    return {
+      id,
+      name,
+      year,
+      songs,
+    };
   }
 
   async editAlbumById(id, { name, year }) {
