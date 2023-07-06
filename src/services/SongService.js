@@ -1,4 +1,3 @@
-/* eslint-disable quotes */
 const { nanoid } = require('nanoid');
 const { Pool } = require('pg');
 const InvariantError = require('../exceptions/InvariantError');
@@ -11,23 +10,12 @@ class SongService {
   }
 
   async addSong({ title, year, genre, performer, duration, albumId }) {
-    const id = 'song-' + nanoid(16);
+    const id = `song-${nanoid(16)}`;
     const createdAt = new Date().toISOString();
-    const updatedAt = createdAt;
 
     const query = {
-      text: 'Insert Into songs values($1, $2, $3, $4, $5, $6, $7, $8, $9) Returning id',
-      values: [
-        id,
-        title,
-        year,
-        genre,
-        performer,
-        duration,
-        albumId,
-        createdAt,
-        updatedAt,
-      ],
+      text: 'Insert Into songs values($1, $2, $3, $4, $5, $6, $7, $8, $8) Returning id',
+      values: [id, title, year, genre, performer, duration, albumId, createdAt],
     };
 
     const result = await this._pool.query(query);
@@ -37,20 +25,11 @@ class SongService {
     return result.rows[0].id;
   }
 
-  async getSongs(title, performer) {
-    let query;
-    if (title !== undefined && performer !== undefined) {
-      query = `select id, title, performer from songs where title ilike '%${title}%' and performer ilike '%${performer}%'`;
-    } else if (title !== undefined && performer === undefined) {
-      query = `select id, title, performer from songs where title ilike '%${title}%'`;
-    } else if (title === undefined && performer !== undefined) {
-      query = `select id, title, performer from songs where performer ilike '%${performer}%'`;
-    } else {
-      query = `select id, title, performer from songs`;
-    }
+  async getSongs(title = '', performer = '') {
+    const query = `select id, title, performer from songs where title ilike '%${title}%' and performer ilike '%${performer}%'`;
 
-    const result = await this._pool.query(query);
-    return result.rows;
+    const { rows } = await this._pool.query(query);
+    return rows;
   }
 
   async getSongById(id) {

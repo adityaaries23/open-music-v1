@@ -9,7 +9,7 @@ class AlbumService {
   }
 
   async addAlbum({ name, year }) {
-    const id = 'album-' + nanoid(16);
+    const id = `album-${nanoid(16)}`;
     const createdAt = new Date().toISOString();
     const updatedAt = createdAt;
 
@@ -26,8 +26,10 @@ class AlbumService {
   }
 
   async getAlbums() {
-    const result = await this._pool.query('select id, name, year from albums');
-    return result.rows;
+    const { rows } = await this._pool.query(
+      'select id, name, year from albums'
+    );
+    return rows;
   }
 
   async getAlbumById(albumId) {
